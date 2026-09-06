@@ -1,5 +1,7 @@
 # CluBS – Clustering nach Verhalten statt nach Position – Streamlit-Demo
 
+**[→ Demo live ausprobieren](https://sebastianhanisch-clubs-demo.streamlit.app/)**
+
 Elftes Stück der "Konzepte"-Reihe für die Website "Sebastian Hanisch – Operations
 Research und Machine Learning". Das **erste Stück, das keinem der beiden bisherigen
 Wurzelknoten entstammt** (kmeans-demo, agglomerative-demo) - eine echte dritte,
