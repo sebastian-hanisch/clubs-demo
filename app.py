@@ -199,11 +199,15 @@ if "cb_outer_step" not in st.session_state or st.session_state.get("cb_run_owner
     st.session_state["cb_run_owner"] = run_key
     st.session_state["cb_inner_step"] = len(result.outer_steps[n_outer - 1].inner_steps) - 1
 
-outer_idx = st.slider(
-    "CluB-Fund (äußere Schleife)", 0, n_outer - 1, key="cb_outer_step",
-    help="Welcher CluB-Fund gerade betrachtet wird - jeder Durchlauf der äußeren "
-    "Schleife entdeckt genau einen neuen CluB.",
-)
+if n_outer == 1:
+    outer_idx = 0
+    st.caption("Genau ein CluB gefunden - keine Navigation zwischen mehreren Funden nötig.")
+else:
+    outer_idx = st.slider(
+        "CluB-Fund (äußere Schleife)", 0, n_outer - 1, key="cb_outer_step",
+        help="Welcher CluB-Fund gerade betrachtet wird - jeder Durchlauf der äußeren "
+        "Schleife entdeckt genau einen neuen CluB.",
+    )
 outer_step = result.outer_steps[outer_idx]
 n_inner = len(outer_step.inner_steps)
 
@@ -211,10 +215,14 @@ if st.session_state.get("cb_inner_step_owner") != outer_idx:
     st.session_state["cb_inner_step"] = n_inner - 1
     st.session_state["cb_inner_step_owner"] = outer_idx
 
-inner_idx = st.slider(
-    "Verfeinerungsschritt (innere Schleife)", 0, n_inner - 1, key="cb_inner_step",
-    help="FindFunction + UpdateCluster abwechselnd, bis der Jaccard-Index konvergiert.",
-)
+if n_inner == 1:
+    inner_idx = 0
+    st.caption("Nach genau einem Verfeinerungsschritt konvergiert oder abgebrochen - kein Regler nötig.")
+else:
+    inner_idx = st.slider(
+        "Verfeinerungsschritt (innere Schleife)", 0, n_inner - 1, key="cb_inner_step",
+        help="FindFunction + UpdateCluster abwechselnd, bis der Jaccard-Index konvergiert.",
+    )
 inner_step = outer_step.inner_steps[inner_idx]
 
 dt_x = scenario.x[outer_step.remaining_indices]
