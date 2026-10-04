@@ -167,7 +167,8 @@ with st.sidebar:
     r_merge = st.slider(
         "Verschmelzungs-Schwelle r_merge", *bounds("r_merge_slider"), key="r_merge_slider", step=0.01,
         help="Zwei CluBs werden verschmolzen, wenn eine gemeinsame Funktion mindestens "
-        "dieses R² erreicht. Höher = strenger, weniger Verschmelzungen.",
+        "dieses R² erreicht - oder wenn ihr R² den gewichteten Mittelwert der beiden "
+        "Einzel-R² nicht unterschreitet. Höher = strenger, weniger Verschmelzungen.",
     )
 
     st.button(
@@ -382,6 +383,6 @@ st.markdown("---")
 
 st.caption(
     "Diese Demo ist Teil des Portfolios von [Sebastian Hanisch](https://sebastianhanisch.net) – "
-    "Operations Research und Machine Learning. Interesse an einer maßgeschneiderten Lösung für "
-    "Ihr Unternehmen? [Kontakt aufnehmen](https://sebastianhanisch.net/kontakt.html)"
+    "Operations Research und Machine Learning ([Über mich](https://sebastianhanisch.net/ueber-mich.html)). "
+    "Mehr zur Reihe: [Clustering erklärt: k-Means bis HDBSCAN](https://sebastianhanisch.net/konzepte-clustering.html)."
 )

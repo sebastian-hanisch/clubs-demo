@@ -80,7 +80,7 @@ unzugeordnete Punkte übrig sind:
   stark. Eine k-Means-dann-Fit-Baseline erreicht hier nur ARI ≈ 0.10, CluBS ≈ 0.97.
 - **Ähnliche Funktionen verschmelzen**: zwei sich stark ähnelnde Geraden werden bei
   der Standard-Verschmelzungs-Schwelle $r_{merge}=0.85$ fälschlich zu einem CluB
-  verschmolzen - der $r_{merge}$-Regler zeigt live, wie ein höherer Wert (≥ 0.92 in
+  verschmolzen - der $r_{merge}$-Regler zeigt live, wie ein höherer Wert (≥ 0.91 in
   diesem Szenario) die Trennung wiederherstellt (analog zu Figure 3 im Paper).
 - **Keine Konvergenzgarantie**: ein ehrlicher Härtefall (sehr ähnliche, verrauschte
   Funktionen) - CluBS liefert eine sichere, aber falsche Partition (ARI ≈ 0.02).
@@ -159,6 +159,4 @@ pytest tests/ -v
 
 ---
 
-Teil des [Operations-Research-Demo-Portfolios](https://sebastianhanisch.net/demos.html) von
-[Sebastian Hanisch](https://sebastianhanisch.net) – Operations Research und Machine Learning.
-Interesse an einer maßgeschneiderten Lösung? [Kontakt aufnehmen](https://sebastianhanisch.net/kontakt.html).
+Diese Demo ist Teil des Portfolios von [Sebastian Hanisch](https://sebastianhanisch.net) – Operations Research und Machine Learning ([Über mich](https://sebastianhanisch.net/ueber-mich.html)). Mehr zur Reihe: [Clustering erklärt: k-Means bis HDBSCAN](https://sebastianhanisch.net/konzepte-clustering.html).
