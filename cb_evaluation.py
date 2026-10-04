@@ -1,7 +1,7 @@
 """Bewertungsmetriken (from scratch, kein sklearn) fuer den Ground-Truth-Recovery-
-Nachweis aus Abschnitt 5.1 des CluBS-Papers - ARI, NMI, F1_macro (mit Label-
+Nachweis - ARI, NMI, F1_macro (mit Label-
 Permutation) - plus eine frische k-Means-dann-Fit-Baseline (kein Cross-Import) fuer
-den Figure-1-Kernvergleich dieser Demo."""
+den Kernvergleich dieser Demo."""
 
 from itertools import permutations
 
@@ -76,8 +76,7 @@ def _best_label_permutation_accuracy_and_f1(true_labels, pred_labels):
     """Findet - per Bruteforce ueber alle Permutationen der (wenigen) Cluster-Labels -
     die Zuordnung Vorhersage->Wahrheit, die die Genauigkeit maximiert, und liefert
     Accuracy plus F1_macro unter dieser Zuordnung. Nur fuer kleine Clusterzahlen
-    praktikabel (hier: 2-6 CluBs), exakt wie im Paper beschrieben ("applying label
-    permutation to account for arbitrary cluster indices")."""
+    praktikabel (hier: 2-6 CluBs), ueblich fuer Clustering-Metriken mit beliebigen Cluster-Indizes."""
     true_labels = np.asarray(true_labels)
     pred_labels = np.asarray(pred_labels)
     true_ids = np.unique(true_labels)
@@ -122,8 +121,8 @@ def accuracy_and_f1_macro(true_labels, pred_labels):
 
 def kmeans_1d_then_fit_labels(x, y, k, seed, n_restarts=5, max_iter=100):
     """Frische, eigenstaendige k-Means-Implementierung (kein Cross-Import aus
-    kmeans-demo) auf der (x,y)-Punktwolke - genau der Baseline-Ansatz aus Figure 1 des
-    Papers: erst raeumlich clustern, dann PRO Cluster eine Funktion fitten. Liefert
+    kmeans-demo) auf der (x,y)-Punktwolke - genau der Baseline-Ansatz des Kernvergleichs:
+    erst raeumlich clustern, dann PRO Cluster eine Funktion fitten. Liefert
     nur die Cluster-Zuordnung (Rueckgabe passend zu `find_function`-basierten Labels)."""
     points = np.column_stack([x, y])
     rng = np.random.default_rng(seed)
@@ -150,7 +149,7 @@ def kmeans_1d_then_fit_labels(x, y, k, seed, n_restarts=5, max_iter=100):
 
 
 def kmeans_then_fit_labels(x, y, k, seed, n_restarts=5):
-    """Alias mit dem im Paper genutzten Namen (`kmeans_then_fit`): raeumliches
+    """Alias mit dem kuerzeren Namen (`kmeans_then_fit`): raeumliches
     k-Means auf (x,y), gefolgt von je einer `find_function`-Anpassung pro Cluster
     (zur Vollstaendigkeit hier zurueckgegeben, fuer den reinen Partitions-Vergleich
     reicht die Cluster-Zuordnung selbst)."""

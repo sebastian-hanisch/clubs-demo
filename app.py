@@ -10,8 +10,8 @@ geometrischer Naehe.
 ⚠️ Frisch aus der Forschung: Zdankin, Kummerow & Weis, "CluBS: Clustering
 Behavioural Similarity", KDD'26 (DOI 10.1145/3770855.3817875, August 2026,
 Referenzimplementierung: https://github.com/TheRustyStorm/CluBS). Das ist
-unveroeffentlichte, noch nicht unabhaengig reproduzierte Forschung - KEIN
-etablierter De-facto-Standard wie Leiden oder HDBSCAN. Diese Demo baut Algorithm 1
+veroeffentlichte, noch nicht unabhaengig reproduzierte Forschung - KEIN
+etablierter De-facto-Standard wie Leiden oder HDBSCAN. Diese Demo baut den Algorithmus
 des Papers von Grund auf nach, mit EINER bewusst benannten Vereinfachung (siehe
 README/Formulierungs-Expander): `FindFunction` durchsucht eine kleine Bibliothek von
 Polynomgraden (1-3) statt offener symbolischer Regression.
@@ -69,9 +69,9 @@ st.warning(
     "*Zdankin, Kummerow & Weis, \"CluBS: Clustering Behavioural Similarity\", "
     "KDD'26* nach ([DOI 10.1145/3770855.3817875](https://doi.org/10.1145/3770855.3817875), "
     "August 2026, [Referenzimplementierung](https://github.com/TheRustyStorm/CluBS)) - "
-    "unveröffentlichte, noch nicht unabhängig reproduzierte Forschung, kein De-facto-"
-    "Standard wie Leiden oder HDBSCAN in dieser Reihe. Das Paper selbst benennt offen: "
-    "*\"We do not provide any guarantees for convergence.\"*"
+    "kürzlich veröffentlichte, noch nicht unabhängig reproduzierte Forschung, kein De-facto-"
+    "Standard wie Leiden oder HDBSCAN in dieser Reihe. Eine Konvergenzgarantie ist für diese Demo nicht belegt: "
+    "die Konvergenzprüfung ist ein Abbruchkriterium, kein Optimalitätsbeweis."
 )
 
 st.markdown(
@@ -111,15 +111,15 @@ CluB-Paare werden verschmolzen (Merge), solange das die Erklärgüte nicht versc
 
 **Vereinfachung dieser Demo**: `FindFunction` (im Paper offene Symbolische Regression)
 sucht hier über eine kleine Bibliothek von Polynomgraden (1-3) - der niedrigste Grad,
-der eine Gütegrenze erreicht, gewinnt. Das deckt sich mit dem sauberesten Benchmark
-des Papers selbst (Abschnitt 5.1), der ebenfalls Polynom-Mischungen verwendet.
+der eine Gütegrenze erreicht, gewinnt. Die Szenarien dieser Demo sind passend dazu
+Mischungen aus zwei Polynomen (Grad 1-3).
         """
     )
 
 st.caption("🎯 Schnellstart – ein Beispielszenario laden:")
 PRESET_HELP = {
     "Einfaches Beispiel": "Zwei klar getrennte Verhaltensweisen (großer Offset) - CluBS rekonstruiert beide Funktionen und die Partition zuverlässig.",
-    "k-Means scheitert, CluBS nicht": "Die Kernaussage des Papers (Figure 1): die Punktwolken überlappen räumlich - eine k-Means-dann-Fit-Baseline scheitert, CluBS trennt weiterhin nach Funktionsverhalten.",
+    "k-Means scheitert, CluBS nicht": "Die Kernidee: die Punktwolken überlappen räumlich - eine k-Means-dann-Fit-Baseline scheitert, CluBS trennt weiterhin nach Funktionsverhalten.",
     "Ähnliche Funktionen verschmelzen": "Zwei sich stark ähnelnde Funktionen - der Verschmelzungs-Schwellenwert r_merge entscheidet live, ob sie getrennt bleiben.",
     "Keine Konvergenzgarantie": "Ehrlicher Härtefall: sehr ähnliche, verrauschte Funktionen - CluBS liefert hier eine sichere, aber falsche Partition. Keine beschönigte Erfolgsgarantie.",
 }
@@ -149,7 +149,7 @@ with st.sidebar:
     )
     offset = st.slider(
         "Offset (Trennbarkeit)", *bounds("offset_slider"), key="offset_slider", step=0.5,
-        help="Additiver Versatz auf Funktion B - im Paper genutzt, um die Trennbarkeit "
+        help="Additiver Versatz auf Funktion B, um die Trennbarkeit "
         "zu erhöhen. Bei 0 können sich die Punktwolken im Rohraum stark überlappen.",
     )
     noise = st.slider("Rauschen σ", *bounds("noise_slider"), key="noise_slider", step=0.05)
@@ -281,7 +281,7 @@ st.markdown("---")
 st.subheader("📐 Warum reicht räumliche Nähe nicht?")
 st.markdown(
     """
-Der Kernvergleich aus **Figure 1** des Papers: eine klassische **k-Means-dann-Fit**-
+Der Kernvergleich dieser Demo: eine klassische **k-Means-dann-Fit**-
 Baseline clustert zuerst nach räumlicher Nähe im $(x,y)$-Raum und passt danach pro
 Cluster eine Funktion an. CluBS clustert direkt nach Funktionsverhalten. Live für Ihr
 aktuelles Szenario:
@@ -317,8 +317,8 @@ if gap > 0.2:
 elif clubs_ari < 0.5:
     st.warning(
         f"⚠️ Ehrlicher Befund: CluBS erreicht hier nur einen Adjusted Rand Index von "
-        f"{clubs_ari:.2f} - das Paper benennt selbst offen, dass keine "
-        f"Konvergenzgarantie besteht. Bei sehr ähnlichen Funktionen kann die "
+        f"{clubs_ari:.2f} - eine "
+        f"Konvergenzgarantie gibt es nicht. Bei sehr ähnlichen Funktionen kann die "
         f"Fehlerschwelle τ_ε oder die Startcluster-Größe helfen, ist aber kein Free Lunch."
     )
 else:
@@ -344,10 +344,9 @@ $$
 
 minimieren - wobei WEDER $c$ noch die Funktionen vorab bekannt sind.
 
-**Algorithm 1** (vollständig nachgebaut in `cb_algorithm.py`):
+**Der Algorithmus** (vollständig nachgebaut in `cb_algorithm.py`):
 
-1. **SelectInitialCluster** (kNN-Variante, laut Paper die bessere der beiden
-   getesteten Varianten): eine zufällige Ecke der Bounding-Box der Restdaten $D_t$,
+1. **SelectInitialCluster** (kNN-Variante): eine zufällige Ecke der Bounding-Box der Restdaten $D_t$,
    plus deren $k$ nächste Nachbarn.
 2. **Innere Schleife**: abwechselnd
    $f_{t,u} = \arg\min_{f\in\Omega}\sum_{x_i\in X_{t,u}}(f(x_i)-y_i)^2$
@@ -360,22 +359,20 @@ minimieren - wobei WEDER $c$ noch die Funktionen vorab bekannt sind.
    verschmolzen, wenn das verschmolzene $R^2$ den gewichteten Mittelwert beider
    Einzel-$R^2$ übertrifft ODER eine feste Schwelle $r_{merge}$ übersteigt.
 
-**Vereinfachung dieser Demo**: $\Omega$ ist im Paper eine offene, per genetischer
-Programmierung durchsuchte Menge symbolischer Ausdrücke. Diese Demo ersetzt das durch
+**Vereinfachung dieser Demo**: $\Omega$ ist im Paper eine offene Menge
+symbolischer Ausdrücke (symbolische Regression). Diese Demo ersetzt das durch
 eine Bibliothek von Polynomgraden 1-3 (per kleinstem Quadrat gefittet) - der
-niedrigste Grad, der eine $R^2$-Gütegrenze erreicht, gewinnt. Das deckt sich mit dem
-saubersten, am leichtesten reproduzierbaren Benchmark des Papers selbst (Abschnitt
-5.1, Ground-Truth Function Recovery), der ebenfalls Mischungen aus Polynomen
-verwendet.
+niedrigste Grad, der eine $R^2$-Gütegrenze erreicht, gewinnt. Die Szenarien dieser Demo sind
+passend dazu Mischungen aus zwei Polynomen (Ground-Truth Function Recovery: ARI
+gegen die wahre Funktionszugehörigkeit).
 
-**Ehrlich benannt, nicht versteckt**: das Paper selbst gibt an, *"We do not provide
-any guarantees for convergence"* - CluBS ist damit das erste Stück dieser Reihe ganz
+**Ehrlich benannt, nicht versteckt**: für CluBS ist hier keine Konvergenzgarantie belegt - CluBS ist damit das erste Stück dieser Reihe ganz
 ohne Konvergenz- oder Monotonie-Beweis (anders als k-Means' Trägheit, EM/VI's ELBO
 oder Leidens Modularität). Das Preset "Keine Konvergenzgarantie" zeigt einen echten
-Fehlschlag, analog zu Figure 6 im Appendix des Papers.
+Fehlschlag.
 
-Implementiert in `cb_algorithm.py` (Algorithm 1), `cb_evaluation.py` (ARI/NMI/F1_macro,
-k-Means-dann-Fit-Baseline) und `cb_scenario.py` (Polynom-Mischungen, Abschnitt 5.1).
+Implementiert in `cb_algorithm.py` (der Algorithmus), `cb_evaluation.py` (ARI/NMI/F1_macro,
+k-Means-dann-Fit-Baseline) und `cb_scenario.py` (Polynom-Mischungen).
         """
     )
 

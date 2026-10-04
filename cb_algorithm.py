@@ -1,12 +1,11 @@
-"""Von Grund auf neu implementierter CluBS-Algorithmus (Algorithm 1 aus Zdankin,
+"""Von Grund auf neu implementierter CluBS-Algorithmus (nach Zdankin,
 Kummerow & Weis, "CluBS: Clustering Behavioural Similarity", KDD'26).
 
 Eine bewusste, im README begruendete Vereinfachung: `find_function` (der Symbolic-
 Regression-Baustein des Papers) durchsucht hier eine kleine Bibliothek von
-Polynomgraden (1-3) statt einer offenen genetischen Ausdruckssuche - siehe README.
+Polynomgraden (1-3) statt einer offenen Ausdruckssuche - siehe README.
 
-Das Paper selbst benennt explizit: "We do not provide any guarantees for
-convergence" - die Konvergenzpruefung (Jaccard-Index >= 1-tau oder u > u_max) ist
+Eine Konvergenzgarantie ist fuer diese Demo nicht belegt - die Konvergenzpruefung (Jaccard-Index >= 1-tau oder u > u_max) ist
 daher ein Abbruchkriterium, kein Optimalitaetsbeweis.
 """
 
@@ -40,11 +39,11 @@ def r_squared(y_true, y_pred):
 
 
 def find_function(x, y, max_degree=MAX_DEGREE, r2_threshold=R2_ACCEPT_THRESHOLD):
-    """FindFunction (Gleichung 6 im Paper): sucht die Funktion, die die kleinste
+    """FindFunction: sucht die Funktion, die die kleinste
     quadratische Fehlersumme auf (x, y) erreicht. Vereinfachung dieser Demo: statt
     offener symbolischer Regression wird ueber Polynomgrade 1..max_degree gesucht -
     der NIEDRIGSTE Grad, der eine R^2-Guetegrenze erreicht, wird bevorzugt (entspricht
-    der im Paper selbst genannten Design-Absicht "kleinere Modelle vermeiden
+    der Design-Absicht dieser Demo: "kleinere Modelle vermeiden
     Overfitting und verbessern Extrapolation"). Erreicht kein Grad die Guetegrenze,
     wird der Grad mit dem besten R^2 zurueckgegeben. Bei zu wenigen Punkten fuer
     Grad 1 (< 2 Punkte) wird eine konstante Funktion (Grad 0, Mittelwert) geliefert.
@@ -73,7 +72,7 @@ def find_function(x, y, max_degree=MAX_DEGREE, r2_threshold=R2_ACCEPT_THRESHOLD)
 
 
 def jaccard_index(a_indices, b_indices):
-    """Jaccard-Index (Gleichung 7 im Paper) zweier Punktmengen (als Indexmengen)."""
+    """Jaccard-Index zweier Punktmengen (als Indexmengen)."""
     a, b = set(a_indices.tolist()), set(b_indices.tolist())
     union = a | b
     if not union:
@@ -82,7 +81,7 @@ def jaccard_index(a_indices, b_indices):
 
 
 def select_initial_cluster(x, k_neighbors, rng):
-    """SelectInitialCluster, kNN-Variante (Abschnitt 4.1.1): eine zufaellig gewaehlte
+    """SelectInitialCluster, kNN-Variante: eine zufaellig gewaehlte
     Ecke der (eindimensionalen) Bounding-Box von x, plus deren k naechste Nachbarn im
     Eingaberaum (hier: nach |x_i - x_seed| sortiert)."""
     corner = rng.choice([x.min(), x.max()])
@@ -94,7 +93,7 @@ def select_initial_cluster(x, k_neighbors, rng):
 
 
 def update_cluster(x, y, function, tau_eps):
-    """UpdateCluster (Abschnitt 4.1.3, Gleichung 8): alle Punkte aus D_t mit
+    """UpdateCluster: alle Punkte aus D_t mit
     Vorhersagefehler unter der Schwelle tau_eps."""
     errs = np.abs(function(x) - y)
     return np.where(errs <= tau_eps)[0]
@@ -123,7 +122,7 @@ class ClubDiscovery:
 
 
 def find_club(x, y, k_neighbors, tau_eps, tau_jaccard, u_max, rng):
-    """Die innere Schleife aus Algorithm 1 (Zeilen 6-11): abwechselnd FindFunction und
+    """Die innere Schleife: abwechselnd FindFunction und
     UpdateCluster, bis der Jaccard-Index zwischen zwei Iterationen >= 1-tau ist oder
     u_max ueberschritten wird."""
     x = np.asarray(x, dtype=float)
@@ -137,7 +136,7 @@ def find_club(x, y, k_neighbors, tau_eps, tau_jaccard, u_max, rng):
         function, r2 = find_function(x[x_prev], y[x_prev])
         x_next = update_cluster(x, y, function, tau_eps)
         if x_next.size == 0:
-            # Sicherheitsgrenze dieser Demo (im Paper nicht spezifiziert): eine leere
+            # Sicherheitsgrenze dieser Demo (Festlegung dieser Demo): eine leere
             # Aktualisierung wuerde FindFunction im naechsten Schritt zum Absturz
             # bringen - wir brechen stattdessen mit der letzten nicht-leeren Menge ab.
             x_next = x_prev
@@ -187,7 +186,7 @@ class RunResult:
 
 
 def reassign(x, y, clubs):
-    """Reassign + Retrain (Abschnitt 4.3): jeder Punkt aus dem GESAMTEN Datensatz wird
+    """Reassign + Retrain: jeder Punkt aus dem GESAMTEN Datensatz wird
     dem CluB mit kleinstem Vorhersagefehler zugeordnet, jede Funktion wird danach auf
     ihrer neuen Mitgliedschaft neu gefittet ("Retrain")."""
     if not clubs:
@@ -205,7 +204,7 @@ def reassign(x, y, clubs):
 
 
 def merge_clubs(x, y, clubs, r_merge):
-    """Merge (Abschnitt 4.3): wiederholt das beste Verschmelzungs-Kandidatenpaar
+    """Merge: wiederholt das beste Verschmelzungs-Kandidatenpaar
     zusammenfuehren, solange eines die Kriterien erfuellt - verschmolzenes R^2
     verbessert den gewichteten Mittelwert der Einzel-R^2, ODER uebersteigt r_merge.
     Terminiert, wenn keine Verschmelzung mehr das Kriterium erfuellt (oder nur noch
@@ -231,7 +230,7 @@ def merge_clubs(x, y, clubs, r_merge):
 
 
 def run(x, y, n_min, tau_jaccard, u_max, k_neighbors, tau_eps, r_merge, seed):
-    """Algorithm 1 vollstaendig: aeussere Schleife (CluB-Entdeckung) gefolgt von
+    """Der Algorithmus vollstaendig: aeussere Schleife (CluB-Entdeckung) gefolgt von
     Reassign, Retrain und Merge."""
     x = np.asarray(x, dtype=float)
     y = np.asarray(y, dtype=float)

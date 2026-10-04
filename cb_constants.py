@@ -27,9 +27,8 @@ TAU_EPS_MIN, TAU_EPS_MAX = 0.2, 15.0
 DEFAULT_R_MERGE = 0.85
 R_MERGE_MIN, R_MERGE_MAX = 0.5, 0.99
 
-# Feste Algorithmus-Hyperparameter aus Algorithm 1 im Paper - dort ebenfalls fest
-# gewaehlt (n_min proportional zur Datensatzgroesse skaliert, da unsere Demo mit
-# deutlich weniger Punkten arbeitet als die 1000-2000 im Paper).
+# Feste Algorithmus-Hyperparameter dieser Demo (n_min proportional zur
+# Datensatzgroesse skaliert, da die Demo mit wenigen hundert Punkten arbeitet).
 TAU_JACCARD = 0.01
 U_MAX = 20
 N_MIN_FRACTION = 0.1

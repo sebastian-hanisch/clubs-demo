@@ -1,6 +1,6 @@
 """Szenario-Generator: Mischungen aus zwei zufaelligen Polynom-Grundwahrheiten, direkt
-nach der Methodik aus Abschnitt 5.1 des CluBS-Papers (Zdankin, Kummerow & Weis, KDD'26)
-nachgebaut - Grad 1/2/3, mit einstellbarem Offset (Trennbarkeit) und Rauschen."""
+im Geist des CluBS-Papers (Zdankin, Kummerow & Weis, KDD'26)
+nachempfunden - Grad 1/2/3, mit einstellbarem Offset (Trennbarkeit) und Rauschen."""
 
 from dataclasses import dataclass
 
@@ -26,7 +26,7 @@ def generate_polynomial_mixture(
     x_range=X_RANGE, coeff_scale=COEFF_SCALE,
 ):
     """Erzeugt eine Punktwolke aus zwei zufaelligen Polynomen vom Grad `degree_a`/
-    `degree_b` (je 1-3). `offset` wird - wie im Paper - additiv auf Funktion B addiert,
+    `degree_b` (je 1-3). `offset` wird additiv auf Funktion B addiert,
     um die Trennbarkeit zu erhoehen. Rueckgabe ist deterministisch fuer festen `seed`."""
     rng = np.random.default_rng(seed)
     coeffs_a = rng.uniform(-coeff_scale, coeff_scale, degree_a + 1)

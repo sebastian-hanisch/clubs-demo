@@ -124,7 +124,7 @@ def test_reassign_never_increases_club_count():
 
 
 # ---------------------------------------------------------------------------
-# Kernbehauptungen: Ground-Truth Function Recovery (Paper Abschnitt 5.1) und
+# Kernbehauptungen: Ground-Truth Function Recovery und
 # ehrlich fehlende Konvergenzgarantie
 # ---------------------------------------------------------------------------
 
@@ -152,7 +152,7 @@ def test_ground_truth_recovery_matches_paper_methodology_well_separated_case():
 
 
 def test_no_convergence_guarantee_shown_honestly_on_hard_case():
-    # Haerte-Fall analog zu Figure 6 im Appendix: zwei Funktionen, die sich ueber den
+    # Haerte-Fall: zwei Funktionen, die sich ueber den
     # gesamten Bereich stark aehneln (kein Offset, gleicher Grad, aehnliche
     # Koeffizienten) - CluBS' eigene Konvergenzpruefung bietet KEINE Garantie, dass
     # dabei die wahre Partition gefunden wird. Wir zeigen das ehrlich: der ARI muss
@@ -170,7 +170,7 @@ def test_no_convergence_guarantee_shown_honestly_on_hard_case():
 
 
 def test_kmeans_baseline_fails_where_clubs_succeeds_on_overlapping_scatter():
-    # Figure-1-Kernszenario: kein Offset, sich kreuzende Funktionen - die
+    # Kernszenario: kein Offset, sich kreuzende Funktionen - die
     # (x,y)-Punktwolken beider Funktionen ueberlappen im Rohraum. Eine
     # k-Means-dann-Fit-Baseline (siehe cb_evaluation.py) soll hier klar
     # schlechter abschneiden als CluBS selbst.

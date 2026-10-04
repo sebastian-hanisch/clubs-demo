@@ -1,7 +1,7 @@
 """Plotly-Visualisierungen: Punktwolke mit ueberlagerten gefitteten Funktionskurven (neuer
 Diagrammtyp fuer diese Reihe), verschachtelte Schritt-fuer-Schritt-Ansicht des inneren
-CluBS-Loops (im Illustrationsstil von Figure 2 des Papers) und der direkte
-Figure-1-Methodenvergleich gegen eine k-Means-dann-Fit-Baseline."""
+CluBS-Loops und der direkte
+Methodenvergleich gegen eine k-Means-dann-Fit-Baseline."""
 
 import numpy as np
 
@@ -124,7 +124,7 @@ def build_inner_step_figure(dt_x, dt_y, cluster_indices, function, next_indices,
 
 def build_metric_comparison_chart(clubs_ari, kmeans_ari):
     """Balkendiagramm: Adjusted Rand Index von CluBS gegen die k-Means-dann-Fit-
-    Baseline auf demselben Szenario - der direkte Figure-1-Kernvergleich des Papers."""
+    Baseline auf demselben Szenario - der direkte Kernvergleich."""
     import plotly.graph_objects as go
 
     labels = ["CluBS", "k-Means dann Fit"]
