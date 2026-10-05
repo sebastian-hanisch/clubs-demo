@@ -244,7 +244,10 @@ im3.metric("Jaccard-Index", f"{inner_step.jaccard:.4f}", help="Konvergenz bei �
 if inner_step.converged:
     st.success(f"✅ Konvergiert nach {inner_idx + 1} Verfeinerungsschritt(en).")
 elif inner_idx == n_inner - 1:
-    st.info(f"ℹ️ Abgebrochen nach u_max={C.U_MAX} Schritten (keine Konvergenzgarantie, siehe Formulierungs-Expander).")
+    st.info(
+        f"ℹ️ Abgebrochen nach {n_inner} Schritten, weil u > u_max={C.U_MAX} (Konvergenz nicht erreicht; "
+        "keine Konvergenzgarantie, siehe Formulierungs-Expander)."
+    )
 
 st.markdown("---")
 st.markdown("### Endergebnis nach Reassign, Retrain und Merge")
